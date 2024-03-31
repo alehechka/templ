@@ -82,7 +82,7 @@ func TestExpressionCSSPropertyParser(t *testing.T) {
 			}
 
 			w := new(bytes.Buffer)
-			cw := NewContextWriter(w, WriteContextCSS)
+			cw := NewContextWriter(w, WriteContextCSS, true)
 			if err := result.Write(cw, 0); err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -143,7 +143,7 @@ func TestConstantCSSPropertyParser(t *testing.T) {
 			}
 
 			w := new(bytes.Buffer)
-			cw := NewContextWriter(w, WriteContextCSS)
+			cw := NewContextWriter(w, WriteContextCSS, true)
 			if err := result.Write(cw, 0); err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -369,7 +369,7 @@ background-color: { prop };
 			}
 
 			w := new(bytes.Buffer)
-			cw := NewContextWriter(w, WriteContextCSS)
+			cw := NewContextWriter(w, WriteContextCSS, true)
 			if err := result.Write(cw, 0); err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}

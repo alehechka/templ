@@ -291,7 +291,7 @@ templ Hello() {
 			}
 
 			sb := new(strings.Builder)
-			cw := NewContextWriter(sb, WriteContextAll)
+			cw := NewContextWriter(sb, WriteContextAll, true)
 			err = tf.Write(cw)
 			if err != nil {
 				t.Fatalf("failed to write template file: %v", err)

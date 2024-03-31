@@ -144,7 +144,7 @@ func TestForExpressionParser(t *testing.T) {
 			}
 
 			w := new(bytes.Buffer)
-			cw := NewContextWriter(w, WriteContextHTML)
+			cw := NewContextWriter(w, WriteContextHTML, true)
 			if err := actual.Write(cw, 0); err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}

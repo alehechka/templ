@@ -467,8 +467,9 @@ if test {
 			input:  "<input\n\t\trequired\n\t/>",
 			parser: StripType[Node](element),
 			expected: Element{
-				Name:        "input",
-				IndentAttrs: true,
+				Name:          "input",
+				IndentAttrs:   true,
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 6, Line: 0, Col: 6},
@@ -489,8 +490,9 @@ if test {
 			input:  "<input\r\n\t\trequired\r\n\t/>",
 			parser: StripType[Node](element),
 			expected: Element{
-				Name:        "input",
-				IndentAttrs: true,
+				Name:          "input",
+				IndentAttrs:   true,
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 6, Line: 0, Col: 6},
@@ -561,9 +563,10 @@ func TestElementParser(t *testing.T) {
 		{
 			name:         "element: self-closing with single constant attribute",
 			input:        `<a href="test"/>`,
-			expectedHTML: `<a href="test"></a>`,
+			expectedHTML: `<a href="test"/>`,
 			expected: Element{
-				Name: "a",
+				Name:          "a",
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 2, Line: 0, Col: 2},
@@ -585,7 +588,8 @@ func TestElementParser(t *testing.T) {
 			input:        `<hr noshade?={ true }/>`,
 			expectedHTML: `<hr noshade ="      "/>`,
 			expected: Element{
-				Name: "hr",
+				Name:          "hr",
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 3, Line: 0, Col: 3},
@@ -619,9 +623,10 @@ func TestElementParser(t *testing.T) {
 		{
 			name:         "element: self-closing with single expression attribute",
 			input:        `<a href={ "test" }/>`,
-			expectedHTML: `<a href="        "></a>`,
+			expectedHTML: `<a href="        "/>`,
 			expected: Element{
-				Name: "a",
+				Name:          "a",
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 2, Line: 0, Col: 2},
@@ -655,9 +660,10 @@ func TestElementParser(t *testing.T) {
 		{
 			name:         "element: self-closing with multiple constant attributes",
 			input:        `<a href="test" style="text-underline: auto"/>`,
-			expectedHTML: `<a href="test" style="text-underline: auto"></a>`,
+			expectedHTML: `<a href="test" style="text-underline: auto"/>`,
 			expected: Element{
-				Name: "a",
+				Name:          "a",
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 2, Line: 0, Col: 2},
@@ -685,9 +691,10 @@ func TestElementParser(t *testing.T) {
 		{
 			name:         "element: self-closing with multiple spreads attributes",
 			input:        `<a { firstSpread... } { children... }/>`,
-			expectedHTML: `<a                                   ></a>`,
+			expectedHTML: `<a                                   />`,
 			expected: Element{
-				Name: "a",
+				Name:          "a",
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 2, Line: 0, Col: 2},
@@ -735,7 +742,8 @@ func TestElementParser(t *testing.T) {
 			input:        `<hr optionA optionB?={ true } optionC="other"/>`,
 			expectedHTML: `<hr optionA optionB ="      " optionC="other"/>`,
 			expected: Element{
-				Name: "hr",
+				Name:          "hr",
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 3, Line: 0, Col: 3},
@@ -784,9 +792,10 @@ func TestElementParser(t *testing.T) {
 		{
 			name:         "element: self-closing with multiple constant and expr attributes",
 			input:        `<a href="test" title={ localisation.Get("a_title") } style="text-underline: auto"/>`,
-			expectedHTML: `<a href="test" title="                             " style="text-underline: auto"></a>`,
+			expectedHTML: `<a href="test" title="                             " style="text-underline: auto"/>`,
 			expected: Element{
-				Name: "a",
+				Name:          "a",
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 2, Line: 0, Col: 2},
@@ -904,7 +913,8 @@ func TestElementParser(t *testing.T) {
 			input:        `<hr/>`,
 			expectedHTML: `<hr/>`,
 			expected: Element{
-				Name: "hr",
+				Name:          "hr",
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 3, Line: 0, Col: 3},
@@ -916,7 +926,8 @@ func TestElementParser(t *testing.T) {
 			input:        `<hr style="padding: 10px" />`,
 			expectedHTML: `<hr style="padding: 10px"/>`,
 			expected: Element{
-				Name: "hr",
+				Name:          "hr",
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 3, Line: 0, Col: 3},
@@ -947,7 +958,8 @@ func TestElementParser(t *testing.T) {
 	 
 />`,
 			expected: Element{
-				Name: "hr",
+				Name:          "hr",
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 3, Line: 0, Col: 3},
@@ -1010,7 +1022,8 @@ func TestElementParser(t *testing.T) {
 	 
 />`,
 			expected: Element{
-				Name: "hr",
+				Name:          "hr",
+				IsSelfClosing: true,
 				NameRange: Range{
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 3, Line: 0, Col: 3},
@@ -1159,7 +1172,7 @@ func TestElementParser(t *testing.T) {
 		{
 			name:         "element: with self-closing child element",
 			input:        `<a><b/></a>`,
-			expectedHTML: `<a><b></b></a>`,
+			expectedHTML: `<a><b/></a>`,
 			expected: Element{
 				Name: "a",
 				NameRange: Range{
@@ -1168,7 +1181,8 @@ func TestElementParser(t *testing.T) {
 				},
 				Children: []Node{
 					Element{
-						Name: "b",
+						Name:          "b",
+						IsSelfClosing: true,
 						NameRange: Range{
 							From: Position{Index: 4, Line: 0, Col: 4},
 							To:   Position{Index: 5, Line: 0, Col: 5},
@@ -1228,7 +1242,7 @@ func TestElementParser(t *testing.T) {
 		{
 			name:         "element: with multiple child elements",
 			input:        `<a><b></b><c><d/></c></a>`,
-			expectedHTML: `<a><b></b><c><d></d></c></a>`,
+			expectedHTML: `<a><b></b><c><d/></c></a>`,
 			expected: Element{
 				Name: "a",
 				NameRange: Range{
@@ -1251,7 +1265,8 @@ func TestElementParser(t *testing.T) {
 						},
 						Children: []Node{
 							Element{
-								Name: "d",
+								Name:          "d",
+								IsSelfClosing: true,
 								NameRange: Range{
 									From: Position{Index: 14, Line: 0, Col: 14},
 									To:   Position{Index: 15, Line: 0, Col: 15},
@@ -1315,6 +1330,7 @@ func TestElementParser(t *testing.T) {
 					From: Position{Index: 1, Line: 0, Col: 1},
 					To:   Position{Index: 6, Line: 0, Col: 6},
 				},
+				IsSelfClosing: true,
 				Attributes: []Attribute{
 					ConstantAttribute{
 						Name:  "type",
@@ -1392,7 +1408,7 @@ func TestElementParser(t *testing.T) {
 	type="email"
 	id="email"
 	name="email"
-/>`,
+></input>`,
 			expected: Element{
 				Name:        "input",
 				IndentAttrs: true,
@@ -1445,7 +1461,7 @@ func TestElementParser(t *testing.T) {
 			}
 
 			w := new(bytes.Buffer)
-			cw := NewContextWriter(w, WriteContextHTML)
+			cw := NewContextWriter(w, WriteContextHTML, true)
 			if err := result.Write(cw, 0); err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}

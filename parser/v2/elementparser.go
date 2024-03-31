@@ -475,6 +475,7 @@ var selfClosingElement = parse.Func(func(pi *parse.Input) (e Element, ok bool, e
 		pi.Seek(start)
 		return
 	}
+	e.IsSelfClosing = true
 
 	// Parse trailing whitespace.
 	ws, _, err := parse.Whitespace.Parse(pi)

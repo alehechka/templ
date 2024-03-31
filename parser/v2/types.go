@@ -59,15 +59,22 @@ const WriteContextJS WriteContext = 0b1000
 const WriteContextAll WriteContext = 0b1111
 
 type ContextWriter struct {
-	wc WriteContext
-	w  io.Writer
+	wc                WriteContext
+	w                 io.Writer
+	preservePositions bool
 }
 
-func NewContextWriter(w io.Writer, wc WriteContext) ContextWriter {
-	return ContextWriter{
+func NewContextWriter(w io.Writer, wc WriteContext, preservePositions ...bool) ContextWriter {
+	cw := ContextWriter{
 		wc: wc,
 		w:  w,
 	}
+
+	if len(preservePositions) > 0 {
+		cw.preservePositions = preservePositions[0]
+	}
+
+	return cw
 }
 
 func (cw ContextWriter) Write(wc WriteContext, s string) (err error) {
@@ -499,6 +506,7 @@ type Element struct {
 	Children       []Node
 	IndentChildren bool
 	TrailingSpace  TrailingSpace
+	IsSelfClosing  bool
 	NameRange      Range
 }
 
@@ -627,16 +635,14 @@ func (e Element) Write(cw ContextWriter, indent int) error {
 		}
 		return nil
 	}
-	if e.IsVoidElement() {
-		if err := writeIndent(cw, WriteContextHTML, closeAngleBracketIndent, "/>"); err != nil {
-			return err
+	if cw.preservePositions {
+		if e.IsSelfClosing {
+			return writeIndent(cw, WriteContextHTML, closeAngleBracketIndent, "/>")
 		}
-		return nil
+	} else if e.IsVoidElement() {
+		return writeIndent(cw, WriteContextHTML, closeAngleBracketIndent, "/>")
 	}
-	if err := writeIndent(cw, WriteContextHTML, closeAngleBracketIndent, "></", e.Name, ">"); err != nil {
-		return err
-	}
-	return nil
+	return writeIndent(cw, WriteContextHTML, closeAngleBracketIndent, "></", e.Name, ">")
 }
 
 func writeNodesWithoutIndentation(cw ContextWriter, nodes []Node) error {
@@ -1193,12 +1199,10 @@ func (se StringExpression) Write(cw ContextWriter, indent int) error {
 	}
 
 	if cw.wc.IsSet(WriteContextGo) {
-		return writeIndent(cw, WriteContextGo, indent, `{ `, se.Expression.Value, ` }`)
 	} else if cw.wc.IsSet(WriteContextCSS) {
 		return writeIndent(cw, WriteContextCSS, indent, `' `, whiteSpaceString(se.Expression.Value), ` '`)
-	} else {
-		return writeIndent(cw, WriteContextHTML, indent, `" `, whiteSpaceString(se.Expression.Value), ` "`)
 	}
+	return writeIndent(cw, WriteContextGo, indent, `{ `, se.Expression.Value, ` }`)
 }
 
 // ScriptTemplate is a script block.

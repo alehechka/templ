@@ -286,7 +286,7 @@ console.log(value);
 				}
 
 				w := new(bytes.Buffer)
-				cw := NewContextWriter(w, WriteContextJS)
+				cw := NewContextWriter(w, WriteContextJS, true)
 				if err := actual.Write(cw, 0); err != nil {
 					t.Fatalf("unexpected error: %v", err)
 				}

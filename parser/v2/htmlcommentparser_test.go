@@ -70,7 +70,7 @@ func TestHTMLCommentParser(t *testing.T) {
 			}
 
 			w := new(bytes.Buffer)
-			cw := NewContextWriter(w, WriteContextHTML)
+			cw := NewContextWriter(w, WriteContextHTML, true)
 			if err := result.Write(cw, 0); err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -80,6 +80,9 @@ func TestHTMLCommentParser(t *testing.T) {
 
 				t.Errorf("expected:\n%s", displayWhitespaceChars(tt.input))
 				t.Errorf("got:\n%s", displayWhitespaceChars(actualHTML))
+			}
+			if diff := cmp.Diff(getLineLengths(tt.input), getLineLengths(actualHTML)); diff != "" {
+				t.Errorf(diff)
 			}
 		})
 	}

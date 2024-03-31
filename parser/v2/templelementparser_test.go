@@ -149,6 +149,7 @@ func TestTemplElementExpressionParser(t *testing.T) {
 								},
 							},
 						},
+						IsSelfClosing: true,
 						TrailingSpace: SpaceVertical,
 					},
 				},
